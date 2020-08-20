@@ -1,15 +1,7 @@
 ﻿@inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+<NavMenu />
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+<main role="main" class="content">
+    @Body
+</main>
