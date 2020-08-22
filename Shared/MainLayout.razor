@@ -1,7 +1,20 @@
-﻿@inherits Microsoft.AspNetCore.Components.LayoutComponentBase
+﻿@layout RootLayout
+@inherits Microsoft.AspNetCore.Components.LayoutComponentBase
 
-<NavMenu />
-
-<main role="main" class="content">
-    @Body
-</main>
+<Layout>
+    <LayoutHeader Fixed="true">
+        <Bar Background="Background.Light"
+             ThemeContrast="ThemeContrast.Light">
+            <BarBrand>
+                <BarItem>
+                    <BarLink To="https://www.z-bitco.com">
+                        <Heading Size="HeadingSize.Is3">Z-bit</Heading>
+                    </BarLink>
+                </BarItem>
+            </BarBrand>
+        </Bar>
+    </LayoutHeader>
+    <LayoutContent Padding="Padding.Is4.OnX">
+        @Body
+    </LayoutContent>
+</Layout>
