@@ -1,42 +1,72 @@
 ﻿@page "/"
-@using System.Linq
+
 @using System.Collections
 @using System
 
-<div class="container">
-    <div class="row">
-        <h1>Wiegand Calculator</h1>
-    </div>
-    <div class="row">
-        <input size="@_size" style="font-family: monospace;" type="text" @bind-value="CardData" @bind-value:event="oninput"/>
-    </div>
-    <div>
-        <button type="button" class="btn btn-primary" @onclick="Evaluate">Evaluate</button>
-    </div>
-    <div class="row">
-        <p>Facility Code: @_facilityCode</p>
-        <p>Card Number: @_cardNumber</p>
-    </div>
-</div>
+<Row>
+    <Heading Size="HeadingSize.Is1">Wiegand Calculator</Heading>
+    <Container Margin="Margin.Is4.OnY">
+            <Paragraph>
+                Online tool to get translate wiegand binary data. The current version only handles the standard 26-bit format. Future versions will allow for additional format types.
+            </Paragraph>
+            <Paragraph>
+                Contact me at <a href="mailto:qubit@z-bitco.com">qubit@z-bitco.com</a> with suggestions to improve.
+            </Paragraph>
+    </Container>
+</Row>
+<Row>
+    <Container>
+        <Card Margin="Margin.Is4.OnY">
+            <CardTitle Size="4" Margin="Margin.Is4.OnAll" >Wiegand Data</CardTitle>
+            <CardBody>
+                <Field>
+                    <FieldLabel>Enter raw binary data - @_cardData.Length of 26 bits</FieldLabel>
+                    <FieldBody>
+                        <TextEdit MaxLength="@_size" MaskType="MaskType.RegEx" EditMask="^[0-1]*$" @bind-Text="@_cardData"/>
+                    </FieldBody>
+                </Field>
+                <Button Color="Color.Primary" Disabled="@ValidRawData" Clicked="@Evaluate">Evaluate</Button>
+            </CardBody>
+        </Card>
+    </Container>
+</Row>
+<Row>
+    <Container>
+        <Card Margin="Margin.Is4.OnY">
+            <CardTitle Size="4" Margin="Margin.Is4.OnAll" >Evaluation Results</CardTitle>
+            <CardBody>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>Attribute</TableHeaderCell>
+                            <TableHeaderCell>Value</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow>
+                            <TableRowHeader>Facility Code</TableRowHeader>
+                            <TableRowCell>@_facilityCode</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>Card Number</TableRowHeader>
+                            <TableRowCell>@_cardNumber</TableRowCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Container>
+</Row>
 
 @functions {
     private byte _size = 26;
     private ulong? _facilityCode;
     private ulong? _cardNumber;
-
-    private string _cardData;
-    private string CardData
-    {
-        get => _cardData;
-        set
-        {
-            _cardData = new string(value.Where(c => c == '0' || c == '1').Take(_size).ToArray());
-        }
-    }
+    private string _cardData = String.Empty;
+    private bool ValidRawData => _cardData.Length != _size;
 
     private void Evaluate()
     {
-        // 01011010000000010110001100
         _facilityCode = ExtractValueFromCardData(1, 8);
         _cardNumber = ExtractValueFromCardData(9, 16);
     }
