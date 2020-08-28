@@ -1,18 +1,9 @@
 ﻿@page "/"
 
 @using System.Collections
-@using System
 
 <Row>
     <Heading Size="HeadingSize.Is1">Wiegand Calculator</Heading>
-    <Container Margin="Margin.Is4.OnY">
-            <Paragraph>
-                Online tool to translate Wiegand binary data. The current version only handles the standard 26-bit format. Future versions will allow for additional format types.
-            </Paragraph>
-            <Paragraph>
-                Contact me at <a href="mailto:qubit@z-bitco.com">qubit@z-bitco.com</a> with suggestions to improve.
-            </Paragraph>
-    </Container>
 </Row>
 <Row>
     <Container>
@@ -22,10 +13,10 @@
                 <Field>
                     <FieldLabel>Enter raw binary data - @_cardData.Length of 26 bits</FieldLabel>
                     <FieldBody>
-                        <TextEdit MaxLength="@_size" MaskType="MaskType.RegEx" EditMask="^[0-1]*$" @bind-Text="@_cardData"/>
+                        <TextEdit Style="font-family: monospace" MaxLength="@_size" MaskType="MaskType.RegEx" EditMask="^[0-1]*$" TextChanged="@CardDataUpdated"/>
                     </FieldBody>
                 </Field>
-                <Button Color="Color.Primary" Disabled="@ValidRawData" Clicked="@Evaluate">Evaluate</Button>
+                <Button Color="Color.Primary" Disabled="@(_cardData.Length != _size)" Clicked="@Evaluate">Evaluate</Button>
             </CardBody>
         </Card>
     </Container>
@@ -35,26 +26,46 @@
         <Card Margin="Margin.Is4.OnY">
             <CardTitle Size="4" Margin="Margin.Is4.OnAll" >Evaluation Results</CardTitle>
             <CardBody>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell>Attribute</TableHeaderCell>
-                            <TableHeaderCell>Value</TableHeaderCell>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                            <TableRowHeader>Facility Code</TableRowHeader>
-                            <TableRowCell>@_facilityCode</TableRowCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowHeader>Card Number</TableRowHeader>
-                            <TableRowCell>@_cardNumber</TableRowCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <Row Padding="Padding.IsAuto">
+                    @foreach (char bit in _cardData)
+                    {
+                        <Column>
+                            @*<TextEdit Size="Size.Small" Style="font-family: monospace" Text="@GetBit(index)" /> *@
+                        </Column>
+                    }
+                </Row>
+                <Row>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell>Attribute</TableHeaderCell>
+                                <TableHeaderCell>Value</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableRowHeader>Facility Code</TableRowHeader>
+                                <TableRowCell>@_facilityCode</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowHeader>Card Number</TableRowHeader>
+                                <TableRowCell>@_cardNumber</TableRowCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </Row>
             </CardBody>
         </Card>
+    </Container>
+</Row>
+<Row>
+    <Container Margin="Margin.Is4.OnY">
+        <Paragraph>
+            Online tool to translate Wiegand binary data. The current version only handles the standard 26-bit format. Future versions will allow for additional format types.
+        </Paragraph>
+        <Paragraph>
+            Contact me at <a href="mailto:qubit@z-bitco.com">qubit@z-bitco.com</a> with suggestions to improve.
+        </Paragraph>
     </Container>
 </Row>
 
@@ -63,12 +74,18 @@
     private ulong? _facilityCode;
     private ulong? _cardNumber;
     private string _cardData = string.Empty;
-    private bool ValidRawData => _cardData.Length != _size;
+    
+    private void CardDataUpdated(string rawData)
+    {
+        _cardData = rawData ?? string.Empty;
+    }
 
     private void Evaluate()
     {
         _facilityCode = ExtractValueFromCardData(1, 8);
         _cardNumber = ExtractValueFromCardData(9, 16);
+        
+        StateHasChanged();
     }
 
     private ulong ExtractValueFromCardData(byte start, byte length)
@@ -84,4 +101,12 @@
         bitArray.CopyTo(array, 0);
         return BitConverter.ToUInt64(array, 0);
     }
+
+    private string GetBit(int index)
+    {
+        return index < _cardData.Length ? _cardData[index].ToString() : string.Empty;
+    }
+    
+    // 1111110000111111111111111
 }
+
