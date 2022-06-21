@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiegandCalculator", "WiegandCalculator.csproj", "{F5B6FDFB-3BB5-4F97-A9F3-4EF37B10BC63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiegandCalculator", "WiegandCalculator\WiegandCalculator.csproj", "{7C72D68C-CCFD-4563-8138-1A7987E63D44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiegandCalculator.Tests", "WiegandCalculator.Tests\WiegandCalculator.Tests.csproj", "{16F90F99-CAC5-40D5-96CA-367BA46655F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F5B6FDFB-3BB5-4F97-A9F3-4EF37B10BC63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5B6FDFB-3BB5-4F97-A9F3-4EF37B10BC63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5B6FDFB-3BB5-4F97-A9F3-4EF37B10BC63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5B6FDFB-3BB5-4F97-A9F3-4EF37B10BC63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C72D68C-CCFD-4563-8138-1A7987E63D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C72D68C-CCFD-4563-8138-1A7987E63D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C72D68C-CCFD-4563-8138-1A7987E63D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C72D68C-CCFD-4563-8138-1A7987E63D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16F90F99-CAC5-40D5-96CA-367BA46655F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F90F99-CAC5-40D5-96CA-367BA46655F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F90F99-CAC5-40D5-96CA-367BA46655F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F90F99-CAC5-40D5-96CA-367BA46655F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
