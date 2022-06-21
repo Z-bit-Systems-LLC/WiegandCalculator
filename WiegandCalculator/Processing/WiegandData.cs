@@ -52,17 +52,4 @@ public class WiegandData
 
         return array.ToArray();
     }
-    
-    private static void Reverse(BitArray array)
-    {
-        int length = array.Length;
-        int mid = length / 2;
-
-        for (int index = 0; index < mid; index++)
-        {
-            bool bit = array[index];
-            array[index] = array[length - index - 1];
-            array[length - index - 1] = bit;
-        }    
-    }
 }
