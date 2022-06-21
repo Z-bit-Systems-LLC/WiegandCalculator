@@ -1,0 +1,133 @@
+﻿@page "/"
+
+@using WiegandCalculator.Processing
+
+<Row>
+    <Heading Size="HeadingSize.Is1" TextAlignment="TextAlignment.Center">Wiegand Calculator</Heading>
+</Row>
+<Row>
+    <Container>
+        <Card Margin="Margin.Is4.OnY">
+            <CardTitle Size="4" Margin="Margin.Is4.OnAll" >Wiegand Data</CardTitle>
+            <CardBody>
+                <Field>
+                    <FieldLabel>Number of bits</FieldLabel>
+                    <FieldBody>
+                        <NumericPicker Style="font-family: monospace" Decimals="0" Max="64" Min="1" @bind-Value="@_size"/>
+                    </FieldBody>
+                </Field>
+                <Heading Size="HeadingSize.Is6">Facility Code</Heading>
+                <Fields>
+                    <Field>
+                        <FieldLabel>Start bit</FieldLabel>
+                        <FieldBody>
+                            <NumericPicker Style="font-family: monospace" Decimals="0" Max="_size" Min="0" @bind-Value="@_facilityCodeStart"/>
+                        </FieldBody>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Length</FieldLabel>
+                        <FieldBody>
+                            <NumericPicker Style="font-family: monospace" Decimals="0" Max="_size" Min="0" @bind-Value="@_facilityCodeLength"/>
+                        </FieldBody>
+                    </Field>
+                </Fields>
+                
+                <Heading Size="HeadingSize.Is6">Card Number</Heading>
+                <Fields>
+                    <Field>
+                        <FieldLabel>Start bit</FieldLabel>
+                        <FieldBody>
+                            <NumericPicker Style="font-family: monospace" Decimals="0" Max="_size" Min="0" @bind-Value="@_cardNumberStart"/>
+                        </FieldBody>
+                    </Field>
+                    <Field>
+                        <FieldLabel>Length</FieldLabel>
+                        <FieldBody>
+                            <NumericPicker Style="font-family: monospace" Decimals="0" Max="_size" Min="0" @bind-Value="@_cardNumberLength"/>
+                        </FieldBody>
+                    </Field>
+                </Fields>
+
+                <Field>
+                    <FieldLabel>Enter raw binary data - @_cardData.Length of @_size bits</FieldLabel>
+                    <FieldBody>
+                        <TextEdit Style="font-family: monospace" MaxLength="@_size" MaskType="MaskType.RegEx" EditMask="^[0-1]*$" TextChanged="@CardDataUpdated"/>
+                    </FieldBody>
+                </Field>
+                <Button Color="Color.Primary" Disabled="@(_cardData.Length != _size)" Clicked="@Evaluate">Evaluate</Button>
+            </CardBody>
+        </Card>
+    </Container>
+</Row>
+<Row>
+    <Container>
+        <Card Margin="Margin.Is4.OnY">
+            <CardTitle Size="4" Margin="Margin.Is4.OnAll" >Evaluation Results</CardTitle>
+            <CardBody>
+                <Row>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell>Attribute</TableHeaderCell>
+                                <TableHeaderCell>Value</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableRowHeader>Facility Code</TableRowHeader>
+                                <TableRowCell>@_facilityCode</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowHeader>Card Number</TableRowHeader>
+                                <TableRowCell>@_cardNumber</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowHeader>OSDP Byte Data</TableRowHeader>
+                                <TableRowCell>@_osdpByteData</TableRowCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </Row>
+            </CardBody>
+        </Card>
+    </Container>
+</Row>
+<Row>
+    <Container Margin="Margin.Is4.OnY">
+        <Paragraph>
+            Online tool to translate Wiegand binary data.
+        </Paragraph>
+        <Paragraph>
+            Contact me at <a href="mailto:qubit@z-bitco.com">qubit@z-bitco.com</a> with suggestions to improve.
+        </Paragraph>
+    </Container>
+</Row>
+
+@functions {
+    private int _size = 26;
+    private int _facilityCodeStart = 1;
+    private int _facilityCodeLength = 8;
+    private int _cardNumberStart = 9;
+    private int _cardNumberLength = 16;
+    private ulong? _facilityCode;
+    private ulong? _cardNumber;
+    private string _osdpByteData;
+    private string _cardData = string.Empty;
+
+    private void CardDataUpdated(string rawData)
+    {
+        _cardData = rawData ?? string.Empty;
+    }
+
+    private void Evaluate()
+    {
+        var wiegandData = new WiegandData(_cardData);
+        
+        _facilityCode = wiegandData.ExtractValueFromCardData(_facilityCodeStart, _facilityCodeLength);
+        _cardNumber = wiegandData.ExtractValueFromCardData(_cardNumberStart, _cardNumberLength);
+        _osdpByteData = BitConverter.ToString(wiegandData.ExtractOsdpByteData());
+
+        StateHasChanged();
+    }
+}
+
